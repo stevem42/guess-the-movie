@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { fetchMovie } from './lib/getMovie';
 
 import { movieList } from './lib/movieList';
 
@@ -26,6 +27,8 @@ function App() {
   const [correct, setCorrect] = useState(false);
 
   const [guessCount, setGuessCount] = useState(MAX_GUESSES);
+
+  const [path, setPath] = useState('');
 
   const letters = [
     'a',
@@ -70,8 +73,16 @@ function App() {
 
   const setupGame = () => {
     if (gameState === 'setup') {
+      const getPoster = async () => {
+        const poster = await fetchMovie(movie);
+        setPath(poster);
+      };
+
+      getPoster();
       hashWord(movie);
       setGameState(GAME_STATES.PLAYING);
+
+      console.log(path);
     }
   };
 
@@ -97,9 +108,10 @@ function App() {
     console.log('IN UEFFECT');
     // console.log(movie);
     setupGame();
+
     console.log(hashed);
     checkWin();
-  }, [hashed, guessCount, gameState, movie]);
+  }, [hashed, guessCount, gameState, movie, path]);
 
   const checkLetter = async (letter) => {
     console.log('HERE');
@@ -136,11 +148,16 @@ function App() {
     <div className="App">
       {console.log(gameState)}
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        <img
+          src={path}
+          className={
+            gameState === GAME_STATES.PLAYING ? 'poster-blur' : 'poster'
+          }
+          alt="logo"
+        />
         {gameState === GAME_STATES.PLAYING && (
           <div>GUESSES LEFT : {guessCount}</div>
         )}
-
         {gameState === GAME_STATES.WON && (
           <div>
             <div>YOU WON</div>
@@ -153,26 +170,27 @@ function App() {
             <button onClick={() => playAgain()}>Play Again?</button>
           </div>
         )}
-        <div className="letters">{hashed}</div>
 
-        <div>{movie}</div>
-
+        {/* <div>{movie}</div> */}
         {gameState === GAME_STATES.PLAYING && (
           <div className="holder">
-            {letters.map((letter) => (
-              <button
-                className="letters"
-                key={letter}
-                onClick={onLetterPress}
-                disabled={
-                  gameState === GAME_STATES.LOST ||
-                  gameState === GAME_STATES.WON ||
-                  guessedLetters.includes(letter)
-                }
-              >
-                {letter}
-              </button>
-            ))}
+            <div className="letters">{hashed}</div>
+            <div>
+              {letters.map((letter) => (
+                <button
+                  className="letters"
+                  key={letter}
+                  onClick={onLetterPress}
+                  disabled={
+                    gameState === GAME_STATES.LOST ||
+                    gameState === GAME_STATES.WON ||
+                    guessedLetters.includes(letter)
+                  }
+                >
+                  {letter}
+                </button>
+              ))}
+            </div>
           </div>
         )}
       </header>
