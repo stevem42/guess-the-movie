@@ -12,6 +12,8 @@ function App() {
     SETUP: 'setup',
   });
 
+  const MAX_GUESSES = 5;
+
   const [movie, setMovie] = useState(
     movieList[Math.floor(Math.random() * movieList.length)]
   );
@@ -19,11 +21,11 @@ function App() {
 
   const [gameState, setGameState] = useState('setup');
 
-  console.log(gameState);
+  const [guessedLetters, setGuessedLetters] = useState([]);
 
-  const [count, setCount] = useState(0);
+  const [correct, setCorrect] = useState(false);
 
-  const [data, setData] = useState('');
+  const [guessCount, setGuessCount] = useState(MAX_GUESSES);
 
   const letters = [
     'a',
@@ -73,23 +75,39 @@ function App() {
     }
   };
 
+  const playAgain = () => {
+    setGuessedLetters([]);
+    setGuessCount(MAX_GUESSES);
+    setMovie(movieList[Math.floor(Math.random() * movieList.length)]);
+    setGameState(GAME_STATES.SETUP);
+  };
+
   const checkWin = () => {
+    console.log(guessCount);
     if (hashed === movie) {
       setGameState(GAME_STATES.WON);
-      //alert('YOU WON');
       console.log('WIN');
+    } else if (guessCount === 0) {
+      console.log('LOST');
+      setGameState(GAME_STATES.LOST);
     }
   };
 
   useEffect(() => {
-    console.log(movie);
+    console.log('IN UEFFECT');
+    // console.log(movie);
     setupGame();
-    checkWin();
     console.log(hashed);
-  }, [hashed]);
+    checkWin();
+  }, [hashed, guessCount, gameState, movie]);
 
   const checkLetter = async (letter) => {
+    console.log('HERE');
     let updatedWord = hashed;
+
+    if (!movie.toLowerCase().includes(letter)) {
+      setGuessCount(guessCount - 1);
+    }
 
     let index = 0;
     for (let char of movie) {
@@ -102,33 +120,61 @@ function App() {
       index++;
       console.log(updatedWord);
     }
+
     setHashed(updatedWord);
   };
 
   const onLetterPress = async (e) => {
     const letter = e.target.innerText;
+    setGuessedLetters([...guessedLetters, letter]);
+    console.log(guessedLetters);
 
     checkLetter(letter);
   };
 
   return (
     <div className="App">
+      {console.log(gameState)}
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        {gameState === 'won' && <div>WON</div>}
+        {gameState === GAME_STATES.PLAYING && (
+          <div>GUESSES LEFT : {guessCount}</div>
+        )}
+
+        {gameState === GAME_STATES.WON && (
+          <div>
+            <div>YOU WON</div>
+            <button onClick={() => playAgain()}>Play Again?</button>
+          </div>
+        )}
+        {gameState === GAME_STATES.LOST && (
+          <div>
+            <div>YOU LOST</div> <div>{`The Movie Was "${movie}"`}</div>
+            <button onClick={() => playAgain()}>Play Again?</button>
+          </div>
+        )}
         <div className="letters">{hashed}</div>
 
         <div>{movie}</div>
-        <hr />
-        <hr />
 
-        <div className="holder">
-          {letters.map((letter, index) => (
-            <button className="letters" key={letter} onClick={onLetterPress}>
-              {letter}
-            </button>
-          ))}
-        </div>
+        {gameState === GAME_STATES.PLAYING && (
+          <div className="holder">
+            {letters.map((letter) => (
+              <button
+                className="letters"
+                key={letter}
+                onClick={onLetterPress}
+                disabled={
+                  gameState === GAME_STATES.LOST ||
+                  gameState === GAME_STATES.WON ||
+                  guessedLetters.includes(letter)
+                }
+              >
+                {letter}
+              </button>
+            ))}
+          </div>
+        )}
       </header>
     </div>
   );

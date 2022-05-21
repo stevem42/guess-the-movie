@@ -44,3 +44,7 @@ button {
 .letters {
   letter-spacing: 0.3em;
 }
+
+.holder {
+  margin-top: 20px;
+}
