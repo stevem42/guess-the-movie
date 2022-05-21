@@ -13,7 +13,7 @@ function App() {
     SETUP: 'setup',
   });
 
-  const MAX_GUESSES = 5;
+  const MAX_GUESSES = 8;
 
   const [movie, setMovie] = useState(
     movieList[Math.floor(Math.random() * movieList.length)]
@@ -174,7 +174,7 @@ function App() {
         {/* <div>{movie}</div> */}
         {gameState === GAME_STATES.PLAYING && (
           <div className="holder">
-            <div className="letters">{hashed}</div>
+            <div className="hashed">{hashed}</div>
             <div>
               {letters.map((letter) => (
                 <button

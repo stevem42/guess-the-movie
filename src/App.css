@@ -41,19 +41,30 @@ button {
   font-size: calc(10px + 2vmin);
 }
 
+.hashed {
+  letter-spacing: 0.3em;
+  padding-bottom: 25px;
+}
+
 .letters {
   letter-spacing: 0.3em;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .holder {
   margin-top: 20px;
+  justify-content: center;
 }
 
 .poster-blur {
   margin-bottom: 25px;
   filter: blur(15px);
+  max-width: 100%;
 }
 
 .poster {
   margin-bottom: 45px;
+  max-width: 100%;
 }
