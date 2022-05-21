@@ -5,10 +5,23 @@ import './App.css';
 import { movieList } from './lib/movieList';
 
 function App() {
-  const movie = movieList[Math.floor(Math.random() * movieList.length)];
+  const GAME_STATES = Object.freeze({
+    PLAYING: 'playing',
+    WON: 'won',
+    LOST: 'lost',
+    SETUP: 'setup',
+  });
+
+  const [movie, setMovie] = useState(
+    movieList[Math.floor(Math.random() * movieList.length)]
+  );
+  const [hashed, setHashed] = useState('');
+
+  const [gameState, setGameState] = useState('setup');
+
+  console.log(gameState);
 
   const [count, setCount] = useState(0);
-  const [token, setToken] = useState(null);
 
   const [data, setData] = useState('');
 
@@ -41,93 +54,74 @@ function App() {
     'z',
   ];
 
-  const checkLetter = async (letter) => {
-    const guess = {
-      token: token,
-      letter: letter,
-    };
-    const response = await fetch('https://hangman-api.herokuapp.com/hangman', {
-      method: 'PUT',
-      body: JSON.stringify(guess),
-    });
-    const result = await response.json();
-    console.log(result.correct);
-    if (result.correct) {
-      const updatedWord = data.split();
-      const returnedWord = response.hangman.split();
-      data.split().map((letter, i) => {
-        if (returnedWord[i] != '_') {
-          updatedWord[i] = returnedWord[i];
-          setData(updatedWord);
-        }
-      });
+  const hashWord = (word) => {
+    let hashed = '';
+
+    for (const letter of word) {
+      letter.toLowerCase() !== letter.toUpperCase()
+        ? (hashed += '_')
+        : (hashed += letter);
+    }
+
+    setHashed(hashed);
+  };
+
+  const setupGame = () => {
+    if (gameState === 'setup') {
+      hashWord(movie);
+      setGameState(GAME_STATES.PLAYING);
     }
   };
 
-  const apiGet = async () => {
-    const response = await fetch('https://hangman-api.herokuapp.com/hangman', {
-      method: 'POST',
-    });
-    console.log(response);
-    const result = await response.json();
-    console.log(result.token);
-    setData(result.hangman);
-    setToken(result.token);
-    console.log(token);
+  const checkWin = () => {
+    if (hashed === movie) {
+      setGameState(GAME_STATES.WON);
+      //alert('YOU WON');
+      console.log('WIN');
+    }
+  };
+
+  useEffect(() => {
+    console.log(movie);
+    setupGame();
+    checkWin();
+    console.log(hashed);
+  }, [hashed]);
+
+  const checkLetter = async (letter) => {
+    let updatedWord = hashed;
+
+    let index = 0;
+    for (let char of movie) {
+      if (letter === char.toLowerCase()) {
+        updatedWord =
+          updatedWord.substring(0, index) +
+          char +
+          updatedWord.substring(index + 1);
+      }
+      index++;
+      console.log(updatedWord);
+    }
+    setHashed(updatedWord);
   };
 
   const onLetterPress = async (e) => {
     const letter = e.target.innerText;
-    if (movie.toLowerCase().includes(letter)) {
-      console.log('TRUE');
-    } else {
-      console.log('FALSE');
-    }
 
-    await checkLetter(letter);
+    checkLetter(letter);
   };
-
-  const word = 'hangman';
-
-  // useEffect(() => {
-  //   apiGet();
-  //   console.log(typeof data);
-  // }, []);
 
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>Hello Vite + React!2</p>
-        <p>
-          <button type="button" onClick={() => setCount((count) => count + 1)}>
-            count is: {count}
-          </button>
-        </p>
-        <p>
-          Edit <code>App.jsx</code> and save to test HMR updates.
-        </p>
-        <p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-          {' | '}
-          <a
-            className="App-link"
-            href="https://vitejs.dev/guide/features.html"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Vite Docs
-          </a>
-        </p>
-        <div className="theWord">{data}</div>
-        <div>{token}</div>
+        {gameState === 'won' && <div>WON</div>}
+        <div className="letters">{hashed}</div>
+
+        <div>{movie}</div>
+        <hr />
+        <hr />
+
         <div className="holder">
           {letters.map((letter, index) => (
             <button className="letters" key={letter} onClick={onLetterPress}>
@@ -135,7 +129,6 @@ function App() {
             </button>
           ))}
         </div>
-        <div>{movie}</div>
       </header>
     </div>
   );
