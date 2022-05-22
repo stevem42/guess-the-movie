@@ -69,14 +69,12 @@ button {
 
 .poster-blur {
   margin-top: 25px;
-  margin-bottom: 25px;
   filter: blur(15px);
   max-width: 90%;
 }
 
 .poster {
   margin-top: 25px;
-  margin-bottom: 45px;
   max-width: 100%;
 }
 
@@ -89,4 +87,25 @@ button {
   .poster {
     max-width: 75%;
   }
+}
+
+div.gameOver > * {
+  margin: 15px 0px;
+  font-size: 1.5em;
+}
+
+/* div.winText > * {
+;
+} */
+
+.playAgain {
+  padding: 15px;
+  border-radius: 2px;
+  font-size: 2em;
+}
+
+.playContainer {
+  max-width: 640px;
+  text-align: center;
+  margin: auto;
 }

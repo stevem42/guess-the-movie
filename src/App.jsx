@@ -24,6 +24,7 @@ function App() {
   const [guessedLetters, setGuessedLetters] = useState([]);
   const [guessCount, setGuessCount] = useState(MAX_GUESSES);
   const [path, setPath] = useState('');
+  const [flash, setFlash] = useState('transparent');
 
   const hashWord = (word) => {
     let hashed = '';
@@ -33,6 +34,14 @@ function App() {
         : (hashed += letter);
     }
     setHashed(hashed);
+  };
+
+  const flashColor = (color) => {
+    setFlash(color);
+
+    setTimeout(() => {
+      setFlash('transparent');
+    }, 750);
   };
 
   const setupGame = () => {
@@ -76,6 +85,7 @@ function App() {
 
     if (!movie.toLowerCase().includes(letter)) {
       setGuessCount(guessCount - 1);
+      flashColor('red');
     }
 
     let index = 0;
@@ -100,27 +110,30 @@ function App() {
 
   return (
     <div className="container">
-      <img
-        src={path}
-        className={gameState === GAME_STATES.PLAYING ? 'poster-blur' : 'poster'}
-        alt="movie-poster"
-      />
+      <div style={{ border: `3px solid ${flash}` }} className="playContainer">
+        <img
+          src={path}
+          className={
+            gameState === GAME_STATES.PLAYING ? 'poster-blur' : 'poster'
+          }
+          alt="movie-poster"
+        />
+      </div>
 
       {gameState === GAME_STATES.WON && (
-        <div>
-          <div>YOU WON</div>
-          <button onClick={() => playAgain()}>Play Again?</button>
+        <div className="gameOver">
+          <div className="winText">YOU WON!</div>
         </div>
       )}
       {gameState === GAME_STATES.LOST && (
-        <div>
-          <div>YOU LOST</div> <div>{`The Movie Was "${movie}"`}</div>
-          <button onClick={() => playAgain()}>Play Again?</button>
+        <div className="gameOver">
+          <div className="winText">YOU LOST</div>{' '}
+          <div>{`The Movie Was "${movie}"`}</div>
         </div>
       )}
 
       {/* <div>{movie}</div> */}
-      {gameState === GAME_STATES.PLAYING && (
+      {gameState === GAME_STATES.PLAYING ? (
         <div>
           <div>GUESSES LEFT : {guessCount}</div>
           <div className="hashed">{hashed}</div>
@@ -131,6 +144,10 @@ function App() {
             letters={guessedLetters}
           ></Keyboard>
         </div>
+      ) : (
+        <button className="playAgain" onClick={() => playAgain()}>
+          Play Again?
+        </button>
       )}
     </div>
   );
