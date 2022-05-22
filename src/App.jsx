@@ -4,6 +4,7 @@ import './App.css';
 import { fetchMovie } from './lib/getMovie';
 
 import { movieList } from './lib/movieList';
+import { Keyboard } from './components/Keyboard/Keyboard';
 
 function App() {
   const GAME_STATES = Object.freeze({
@@ -13,61 +14,24 @@ function App() {
     SETUP: 'setup',
   });
 
-  const MAX_GUESSES = 8;
+  const MAX_GUESSES = 6;
 
   const [movie, setMovie] = useState(
     movieList[Math.floor(Math.random() * movieList.length)]
   );
   const [hashed, setHashed] = useState('');
-
   const [gameState, setGameState] = useState('setup');
-
   const [guessedLetters, setGuessedLetters] = useState([]);
-
-  const [correct, setCorrect] = useState(false);
-
   const [guessCount, setGuessCount] = useState(MAX_GUESSES);
-
   const [path, setPath] = useState('');
-
-  const letters = [
-    'a',
-    'b',
-    'c',
-    'd',
-    'e',
-    'f',
-    'g',
-    'h',
-    'i',
-    'j',
-    'k',
-    'l',
-    'm',
-    'n',
-    'o',
-    'p',
-    'q',
-    'r',
-    's',
-    't',
-    'u',
-    'v',
-    'w',
-    'x',
-    'y',
-    'z',
-  ];
 
   const hashWord = (word) => {
     let hashed = '';
-
     for (const letter of word) {
       letter.toLowerCase() !== letter.toUpperCase()
         ? (hashed += '_')
         : (hashed += letter);
     }
-
     setHashed(hashed);
   };
 
@@ -75,14 +39,14 @@ function App() {
     if (gameState === 'setup') {
       const getPoster = async () => {
         const poster = await fetchMovie(movie);
+        !poster && playAgain();
         setPath(poster);
       };
 
       getPoster();
+
       hashWord(movie);
       setGameState(GAME_STATES.PLAYING);
-
-      console.log(path);
     }
   };
 
@@ -94,27 +58,20 @@ function App() {
   };
 
   const checkWin = () => {
-    console.log(guessCount);
     if (hashed === movie) {
       setGameState(GAME_STATES.WON);
-      console.log('WIN');
     } else if (guessCount === 0) {
-      console.log('LOST');
       setGameState(GAME_STATES.LOST);
     }
   };
 
   useEffect(() => {
-    console.log('IN UEFFECT');
-    // console.log(movie);
     setupGame();
 
-    console.log(hashed);
     checkWin();
   }, [hashed, guessCount, gameState, movie, path]);
 
   const checkLetter = async (letter) => {
-    console.log('HERE');
     let updatedWord = hashed;
 
     if (!movie.toLowerCase().includes(letter)) {
@@ -130,70 +87,51 @@ function App() {
           updatedWord.substring(index + 1);
       }
       index++;
-      console.log(updatedWord);
     }
 
     setHashed(updatedWord);
   };
 
   const onLetterPress = async (e) => {
-    const letter = e.target.innerText;
+    const letter = e.target.innerText.toLowerCase();
     setGuessedLetters([...guessedLetters, letter]);
-    console.log(guessedLetters);
-
     checkLetter(letter);
   };
 
   return (
-    <div className="App">
-      {console.log(gameState)}
-      <header className="App-header">
-        <img
-          src={path}
-          className={
-            gameState === GAME_STATES.PLAYING ? 'poster-blur' : 'poster'
-          }
-          alt="logo"
-        />
-        {gameState === GAME_STATES.PLAYING && (
-          <div>GUESSES LEFT : {guessCount}</div>
-        )}
-        {gameState === GAME_STATES.WON && (
-          <div>
-            <div>YOU WON</div>
-            <button onClick={() => playAgain()}>Play Again?</button>
-          </div>
-        )}
-        {gameState === GAME_STATES.LOST && (
-          <div>
-            <div>YOU LOST</div> <div>{`The Movie Was "${movie}"`}</div>
-            <button onClick={() => playAgain()}>Play Again?</button>
-          </div>
-        )}
+    <div className="container">
+      <img
+        src={path}
+        className={gameState === GAME_STATES.PLAYING ? 'poster-blur' : 'poster'}
+        alt="movie-poster"
+      />
 
-        {/* <div>{movie}</div> */}
-        {gameState === GAME_STATES.PLAYING && (
-          <div className="holder">
-            <div className="hashed">{hashed}</div>
-            <div>
-              {letters.map((letter) => (
-                <button
-                  className="letters"
-                  key={letter}
-                  onClick={onLetterPress}
-                  disabled={
-                    gameState === GAME_STATES.LOST ||
-                    gameState === GAME_STATES.WON ||
-                    guessedLetters.includes(letter)
-                  }
-                >
-                  {letter}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-      </header>
+      {gameState === GAME_STATES.WON && (
+        <div>
+          <div>YOU WON</div>
+          <button onClick={() => playAgain()}>Play Again?</button>
+        </div>
+      )}
+      {gameState === GAME_STATES.LOST && (
+        <div>
+          <div>YOU LOST</div> <div>{`The Movie Was "${movie}"`}</div>
+          <button onClick={() => playAgain()}>Play Again?</button>
+        </div>
+      )}
+
+      {/* <div>{movie}</div> */}
+      {gameState === GAME_STATES.PLAYING && (
+        <div>
+          <div>GUESSES LEFT : {guessCount}</div>
+          <div className="hashed">{hashed}</div>
+
+          <Keyboard
+            onClick={onLetterPress}
+            state={gameState}
+            letters={guessedLetters}
+          ></Keyboard>
+        </div>
+      )}
     </div>
   );
 }

@@ -2,6 +2,14 @@
   text-align: center;
 }
 
+.container {
+  text-align: center;
+  background-color: #282c34;
+  color: white;
+  font-size: calc(10px + 2vmin);
+  min-height: 100vh;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -51,6 +59,7 @@ button {
   align-items: center;
   justify-content: center;
   text-align: center;
+  width: 2.7rem;
 }
 
 .holder {
@@ -59,12 +68,25 @@ button {
 }
 
 .poster-blur {
+  margin-top: 25px;
   margin-bottom: 25px;
   filter: blur(15px);
-  max-width: 100%;
+  max-width: 90%;
 }
 
 .poster {
+  margin-top: 25px;
   margin-bottom: 45px;
   max-width: 100%;
+}
+
+@media (max-width: 400px) {
+  .poster-blur {
+    max-width: 75%;
+  }
+}
+@media (max-width: 400px) {
+  .poster {
+    max-width: 75%;
+  }
 }
