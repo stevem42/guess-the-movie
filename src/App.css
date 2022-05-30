@@ -67,15 +67,31 @@ button {
   justify-content: center;
 }
 
+.poster-container {
+  max-width: 90%;
+  align-items: center;
+  margin: 0 auto;
+  padding: 0px 20px;
+}
+
 .poster-blur {
   margin-top: 25px;
   filter: blur(15px);
-  max-width: 90%;
+  min-width: 100%;
 }
 
 .poster {
   margin-top: 25px;
-  max-width: 100%;
+  min-width: 100%;
+  border: 5px solid #32cd32;
+}
+
+.won {
+  border: 5px solid #32cd32;
+}
+
+.lost {
+  border: 5px solid red;
 }
 
 @media (max-width: 400px) {
