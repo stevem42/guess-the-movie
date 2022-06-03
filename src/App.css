@@ -94,12 +94,12 @@ button {
   border: 5px solid red;
 }
 
-@media (max-width: 400px) {
+@media (max-width: 600px) {
   .poster-blur {
     max-width: 75%;
   }
 }
-@media (max-width: 400px) {
+@media (max-width: 600px) {
   .poster {
     max-width: 75%;
   }

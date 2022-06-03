@@ -52,17 +52,17 @@
   flex-direction: row;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 600px) {
   .row1 {
     margin: 4px;
   }
 }
-@media (max-width: 500px) {
+@media (max-width: 600px) {
   .row2 {
     margin: 5px;
   }
 }
-@media (max-width: 500px) {
+@media (max-width: 600px) {
   .row3 {
     margin: 5px;
   }
