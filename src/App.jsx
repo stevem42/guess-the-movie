@@ -60,7 +60,7 @@ function App() {
         //   alert('poster');
         //   playAgain();
         // }
-        poster === null ? setPath('noposter.png') : setPath(poster);
+        poster === null ? setPath('../noposter.png') : setPath(poster);
       };
 
       await getPoster();
