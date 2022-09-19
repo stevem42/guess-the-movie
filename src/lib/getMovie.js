@@ -16,6 +16,5 @@ export const fetchMovie = async (title) => {
     return `https://image.tmdb.org/t/p/w500${path}`;
   } catch (error) {
     console.log(error);
-    return false;
   }
 };

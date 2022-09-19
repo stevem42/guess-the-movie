@@ -142,6 +142,8 @@ function App() {
         >
           <img
             src={path}
+            width="200"
+            height="600"
             className={
               gameState === GAME_STATES.PLAYING
                 ? 'poster-blur'
@@ -156,12 +158,12 @@ function App() {
 
       {gameState === GAME_STATES.WON && (
         <div className="gameOver">
-          <div className="winText">YOU WON!</div>
+          <div className="winText safe">YOU WON!</div>
         </div>
       )}
       {gameState === GAME_STATES.LOST && (
         <div className="gameOver">
-          <div className="winText">YOU LOST</div>{' '}
+          <div className="winText danger">YOU LOST</div>{' '}
           <div>{`The Movie Was "${movie}"`}</div>
         </div>
       )}
@@ -169,7 +171,16 @@ function App() {
       {/* <div>{movie}</div> */}
       {gameState === GAME_STATES.PLAYING ? (
         <div>
-          <div>GUESSES LEFT : {guessCount}</div>
+          <div>
+            GUESSES LEFT :{' '}
+            <span
+              className={
+                guessCount > 4 ? 'safe' : guessCount > 2 ? 'warning' : 'danger'
+              }
+            >
+              {guessCount}
+            </span>
+          </div>
           <div className="hashed">{hashed}</div>
 
           <Keyboard

@@ -125,3 +125,15 @@ div.gameOver > * {
   text-align: center;
   margin: auto;
 }
+
+.safe {
+  color: #32cd32;
+}
+
+.warning {
+  color: orange;
+}
+
+.danger {
+  color: red;
+}
