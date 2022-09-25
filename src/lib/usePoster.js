@@ -11,7 +11,7 @@ const usePoster = ({ movie }) => {
     const url = `https://api.themoviedb.org/4/search/movie?api_key=${API_KEY}&language=en-US&query=${movie}&include_adult = false)}`;
 
     try {
-      setPoster('./src/assets/images/curtain-pic.jpeg');
+      setPoster(loadingPoster);
 
       const response = await fetch(url);
 
