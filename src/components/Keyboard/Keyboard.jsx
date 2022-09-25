@@ -30,15 +30,17 @@ export const Keyboard = (props) => {
       </div>
       <div className={styles.row}>
         {middleRow.map((letter) => {
+          let correct = props.letters[letter];
+          const inWord = letter in props.letters;
           return (
             <button
               key={letter}
               onClick={props.onClick}
-              // disabled={
-              //   props.state != GAME_STATES.PLAYING ||
-              //   props.letters.includes(letter)
-              // }
+              disabled={props.state != GAME_STATES.PLAYING || inWord}
               className={styles.row2}
+              style={{
+                backgroundColor: !inWord ? '' : correct ? 'green' : 'red',
+              }}
             >
               {letter.toUpperCase()}
             </button>
@@ -47,15 +49,17 @@ export const Keyboard = (props) => {
       </div>
       <div className={styles.row}>
         {bottomRow.map((letter) => {
+          let correct = props.letters[letter];
+          const inWord = letter in props.letters;
           return (
             <button
               key={letter}
               onClick={props.onClick}
-              // disabled={
-              //   props.state != GAME_STATES.PLAYING ||
-              //   props.letters.includes(letter)
-              // }
+              disabled={props.state != GAME_STATES.PLAYING || inWord}
               className={styles.row3}
+              style={{
+                backgroundColor: !inWord ? '' : correct ? 'green' : 'red',
+              }}
             >
               {letter.toUpperCase()}
             </button>
