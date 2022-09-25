@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import loadingPoster from '../../src/assets/images/curtain-pic.jpeg';
 
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
 
 const usePoster = ({ movie }) => {
-  const [poster, setPoster] = useState('./src/assets/images/curtain-pic.jpeg');
+  const [poster, setPoster] = useState(loadingPoster);
   const [posterError, setPosterError] = useState(null);
 
   const fetchPoster = async (movie) => {
