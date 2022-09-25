@@ -4012,7 +4012,6 @@ export const movieList = [
   'Lage Raho Munna Bhai',
   "Ulee's Gold",
   'The Black Stallion',
-  'Sardaar Ji',
   'Journey to Saturn',
   "Donovan's Reef",
   'The Dress',

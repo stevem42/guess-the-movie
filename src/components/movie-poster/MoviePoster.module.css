@@ -1,0 +1,29 @@
+.playContainer {
+  display: flex;
+  width: 400px;
+  max-width: 90%;
+  height: 500px;
+  justify-content: center;
+  margin: 0 auto;
+  margin-bottom: 30px;
+}
+
+.posterContainer {
+  padding: 20px 20px;
+
+  width: 90%;
+  height: 90%;
+  margin-top: 30px;
+
+  border: 5px solid blue;
+}
+
+.posterBlur {
+  filter: blur(15px);
+}
+
+/* .poster {
+  margin-top: 25px;
+  min-width: 100%;
+  border: 5px solid #32cd32;
+} */

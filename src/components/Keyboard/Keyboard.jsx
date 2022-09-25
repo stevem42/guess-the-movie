@@ -1,4 +1,5 @@
 import styles from './Keyboard.module.css';
+import GAME_STATES from '../../lib/gameStates';
 
 const topRow = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'];
 const middleRow = ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'];
@@ -9,14 +10,18 @@ export const Keyboard = (props) => {
     <div className={styles.wrapper}>
       <div className={styles.row}>
         {topRow.map((letter) => {
+          let correct = props.letters[letter];
+          const inWord = letter in props.letters;
+
           return (
             <button
               key={letter}
               onClick={props.onClick}
-              disabled={
-                props.state != 'playing' || props.letters.includes(letter)
-              }
+              disabled={props.state != GAME_STATES.PLAYING || inWord}
               className={styles.row1}
+              style={{
+                backgroundColor: !inWord ? '' : correct ? 'green' : 'red',
+              }}
             >
               {letter.toUpperCase()}
             </button>
@@ -29,9 +34,10 @@ export const Keyboard = (props) => {
             <button
               key={letter}
               onClick={props.onClick}
-              disabled={
-                props.state != 'playing' || props.letters.includes(letter)
-              }
+              // disabled={
+              //   props.state != GAME_STATES.PLAYING ||
+              //   props.letters.includes(letter)
+              // }
               className={styles.row2}
             >
               {letter.toUpperCase()}
@@ -45,9 +51,10 @@ export const Keyboard = (props) => {
             <button
               key={letter}
               onClick={props.onClick}
-              disabled={
-                props.state != 'playing' || props.letters.includes(letter)
-              }
+              // disabled={
+              //   props.state != GAME_STATES.PLAYING ||
+              //   props.letters.includes(letter)
+              // }
               className={styles.row3}
             >
               {letter.toUpperCase()}
@@ -58,51 +65,3 @@ export const Keyboard = (props) => {
     </div>
   );
 };
-
-//   return (
-//     <div className={styles.holder}>
-//       {letters.map((letter, index) => {
-//         if (index < 9) {
-//           return (
-//             <button
-//               key={letter}
-//               onClick={props.onClick}
-//               disabled={
-//                 props.state != 'playing' || props.letters.includes(letter)
-//               }
-//               className={styles.row1}
-//             >
-//               {letter.toUpperCase()}
-//             </button>
-//           );
-//         } else if (index < 19) {
-//           return (
-//             <button
-//               key={letter}
-//               onClick={props.onClick}
-//               disabled={
-//                 props.state != 'playing' || props.letters.includes(letter)
-//               }
-//               className={styles.row2}
-//             >
-//               {letter.toUpperCase()}
-//             </button>
-//           );
-//         } else {
-//           return (
-//             <button
-//               key={letter}
-//               onClick={props.onClick}
-//               disabled={
-//                 props.state != 'playing' || props.letters.includes(letter)
-//               }
-//               className={styles.row3}
-//             >
-//               {letter.toUpperCase()}
-//             </button>
-//           );
-//         }
-//       })}
-//     </div>
-//   );
-// };

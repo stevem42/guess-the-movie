@@ -50,6 +50,8 @@
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
+  bottom: 0px;
+  padding-bottom: 0.5em;
 }
 
 @media (max-width: 600px) {

@@ -1,19 +1,14 @@
 import { useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { fetchMovie } from './lib/getMovie';
 
+import { MoviePoster } from './components/movie-poster/MoviePoster';
 import { movieList } from './lib/movieList';
 import { Keyboard } from './components/Keyboard/Keyboard';
+import GAME_STATES from './lib/gameStates';
+import usePoster from './lib/usePoster';
 
 function App() {
-  const GAME_STATES = Object.freeze({
-    PLAYING: 'playing',
-    WON: 'won',
-    LOST: 'lost',
-    SETUP: 'setup',
-  });
-
   const MAX_GUESSES = 6;
 
   const [movie, setMovie] = useState(
@@ -21,10 +16,11 @@ function App() {
   );
   const [hashed, setHashed] = useState('');
   const [gameState, setGameState] = useState(GAME_STATES.SETUP);
-  const [guessedLetters, setGuessedLetters] = useState([]);
+  const [guessedLetters, setGuessedLetters] = useState({});
   const [guessCount, setGuessCount] = useState(MAX_GUESSES);
-  const [path, setPath] = useState('');
   const [flash, setFlash] = useState('transparent');
+
+  const { poster, fetchPoster, posterError } = usePoster(movie);
 
   const hashWord = (word) => {
     let hash = '';
@@ -52,21 +48,11 @@ function App() {
 
   const setupGame = async () => {
     if (gameState === GAME_STATES.SETUP) {
-      const getPoster = async () => {
-        const poster = await fetchMovie(movie);
-        console.log('POSTER - ', poster);
-
-        // if (!poster) {
-        //   alert('poster');
-        //   playAgain();
-        // }
-        poster === null ? setPath('../noposter.png') : setPath(poster);
-      };
-
-      await getPoster();
+      fetchPoster(movie);
 
       hashWord(movie);
       setGameState(GAME_STATES.PLAYING);
+      console.log(movie);
     }
   };
 
@@ -93,11 +79,8 @@ function App() {
 
     console.log('rendering');
     checkWin();
-    console.log(movie);
     console.log(gameState);
-  }, [hashed, guessCount, gameState, movie, path]);
-
-  useEffect(() => {}, []);
+  }, [hashed, guessCount, gameState, movie]);
 
   const checkLetter = (letter) => {
     let updatedWord = hashed;
@@ -125,36 +108,22 @@ function App() {
     gameEnd = movie === updatedWord || (guessCount === 1 && !guess);
 
     flashColor(guess, gameEnd);
+    return guess;
   };
 
   const onLetterPress = (e) => {
     const letter = e.target.innerText.toLowerCase();
-    setGuessedLetters([...guessedLetters, letter]);
-    checkLetter(letter);
+    const correct = checkLetter(letter);
+    const nextLetter = { [letter]: correct };
+    setGuessedLetters((guessedLetters) => ({
+      ...guessedLetters,
+      ...nextLetter,
+    }));
   };
 
   return (
     <div className="container">
-      <div className="playContainer">
-        <div
-          className="poster-container"
-          style={{ border: `5px solid ${flash}` }}
-        >
-          <img
-            src={path}
-            width="200"
-            height="600"
-            className={
-              gameState === GAME_STATES.PLAYING
-                ? 'poster-blur'
-                : gameState === GAME_STATES.WON
-                ? 'poster won'
-                : 'poster lost'
-            }
-            alt="movie-poster"
-          />
-        </div>
-      </div>
+      <MoviePoster poster={poster} gameState={gameState} flash={flash} />
 
       {gameState === GAME_STATES.WON && (
         <div className="gameOver">
