@@ -8,7 +8,7 @@ const usePoster = ({ movie }) => {
   const [posterError, setPosterError] = useState(null);
 
   const fetchPoster = async (movie) => {
-    const url = `https://api.themoviedb.org/4/search/movie?api_key=${API_KEY}&language=en-US&query=${movie}&include_adult = false)}`;
+    const url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&language=en-US&query=${movie}&include_adult=false`;
 
     try {
       setPoster(loadingPoster);
